@@ -1,0 +1,50 @@
+from random import seed
+from random import random
+import numpy as np
+
+# Initialize the network
+
+def initialize_network(n_inputs,n_hiddens,n_outputs):
+    network=list()
+    hidden_layer=[{'weights':[random() for i in range(n_inputs+1)]} for i in range(n_hiddens)]
+    network.append(hidden_layer)
+    output_layer = [{'weights': [random() for i in range(n_hiddens + 1)]} for i in range(n_outputs)]
+    network.append(output_layer)
+    return network
+
+# calculate neuron activation for an input
+def activate(weights, inputs):
+    activation=weights[-1]
+    for i in range(len(weights)-1):
+        activation+=weights[i] * inputs[i]
+    return activation
+
+# Transfer Neuron Activation
+def transfer(activation):
+    return 1.0/(1.0+np.exp(-activation))
+
+# Forward propogate input to a network output
+def forward_propogate(network,row):
+    inputs=row
+    for layer in network:
+        new_inputs=[]
+        for neuron in layer:
+            activation=activate(neuron['weights'],inputs)
+            neuron['output']=transfer(activation)
+            new_inputs.append(neuron['output'])
+        inputs=new_inputs
+    return inputs
+
+
+
+seed(1)
+
+network=initialize_network(2,1,8)
+
+# for layer in network:
+#     print layer
+
+row=[1,0,None]
+output=forward_propogate(network,row)
+print output
+
